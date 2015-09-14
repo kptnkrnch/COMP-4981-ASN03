@@ -1,0 +1,83 @@
+function Client()
+	display prompt for ip address
+	read in ip
+	
+	display prompt for port
+	read in port
+	
+	display prompt for displayname
+	read in display name
+	
+	create socket connection to server
+	
+	Send display name to server
+	
+	create ReadingThread
+	
+	while running
+		get message to send
+		
+		store message in send packet
+		
+		send message to server
+	end while
+	
+	send disconnect packet
+	
+end function
+
+function ReadingThread()
+	while running
+		read in data
+		
+		if data is server join packet
+			print the name of the server 
+		else if data is client join packet
+			print the name of the user that joined
+		else if data is client message packet
+			print message from the client
+		else if data is client disconnect packet
+			print user that disconnected
+		end
+	end while
+end function
+
+function Server()
+	get port to listen on
+	
+	create new listening socket
+	
+	set "select" on the socket so that we can check if there are new connections
+	
+	while running
+		check if there is a new connection
+		
+		if there is a new connection
+			create new socket using the accept function
+			
+			send server name to new client
+			
+			if there are clients in client list
+				send alert regarding new client connecting to previously connected clients
+			end if
+			
+			add new client to client list
+		end if
+		
+		check if there is data to receive
+		
+		if there is data to be received
+			read in data
+			
+			if data is client message packet
+				forward message to clients that are not the sending client
+			else if data is client disconnect packet
+				remove client from client list
+				
+				send message to all clients in client list regarding the disconnected client
+			end
+		end if
+	
+	end while
+	
+end function
